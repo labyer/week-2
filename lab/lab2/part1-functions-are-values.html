@@ -52,8 +52,19 @@
       // Store sum you compute in this variable:
       var yourSum = 0;
 
+      //function to take over the loop's work above
+      var simpleFunction = function(i){
+        if (typeof theArray[i] === 'string') {         // String case
+          yourSum = yourSum + theArray[i].length;
+        } else if (typeof theArray[i] === 'number') {  // Number case
+          yourSum = yourSum + theArray[i];
+        } else {                                      // Otherwise
+          console.log("Not sure how to proceed with value:", theArray[i]);
+        }
+      }
+
       // Refactor the work above into a few different functions that are reusable to the extent that you can
-      for (var i = 0; i < theArray.length, i++) { /* Do stuff here */ }
+      for (var i = 0; i < theArray.length; i++) { simpleFunction(i); }
 
       /* =====================
 
