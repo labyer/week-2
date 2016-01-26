@@ -57,15 +57,13 @@
       ext: 'png'
     }).addTo(map);
 
-    /* =====================
 
-    Start code
+    var restaurantData=[[39.952235, -75.192662, 'UPenn School of Design'], [39.948070, -75.153577, 'El Fuego'], [39.941867, -75.145320, 'Twisted Tail'], [39.967247, -75.172207, 'OCF Coffee House Fairmount'], [39.952245, -75.175836, 'Agno Grill']];
 
-    ===================== */
+    for (var i = 0 ; i < restaurantData.length ; i++){
+      L.marker(restaurantData[i]).addTo(map).bindPopup(restaurantData[i][2]);
+    }
 
-    L.marker([0, 0]).addTo(map);
-    L.marker([0, 0]).addTo(map);
-    L.marker([0, 0]).addTo(map);
 
     /* =====================
 
