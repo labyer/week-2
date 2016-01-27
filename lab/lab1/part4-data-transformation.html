@@ -51,23 +51,64 @@
 
     ===================== */
 
-    var data = bikeArrayClean;
+    var data_1 = bikeArrayDirty;
 
-    var dataFiltered = []
+    //clean data
 
-    for (i = 0 ; i < bikeArrayClean.length ; i++){
-      if (bikeArrayClean[i][3] > 20){
-        dataFiltered.push(bikeArrayClean[i]);
+    //remove the incomplete observations by removing any observation that contains less than 4 elements
+    var completeData_1 = []
+    for(i = 0 ; i < data_1.length ; i++){
+      if (data_1[i].length >= 4){
+        completeData_1.push(data_1[i])
       }
     }
+    //print to the console to verify
+    console.log(completeData_1)
 
+
+    //one observation (bikeArrayDirty[3]) does not start will coordinates, there could be others.
+    //check and see if the first index of each observation begins with '-7', if it does not, then remove that index from the observation
+    //needing the first variable to start with '-7' is fine with this case because we know we are confined to Philadelphia. This code, however, should be updated to be used in other cities
+    //the code below removes the entire observation rather than just the first index, not exactly what we want...I'll come back to this...
+    //in this case we only want observations with more than 20 stations and this particular observation that is deleted only has 15 so it won't affect our outcome. However, it would be nice to be able to use this code in the future for different station requirements..and this code doesn't yet allow for that
+    var data_2 = completeData_1
+    var firstCharacter = '-'
+    var secondCharacter = '7'
+    var completeData_2 = []
+    for (i = 0 ; i < data_2.length ; i++){
+      if (data_2[i][0][0] === firstCharacter && data_2[i][0][1] === secondCharacter){
+        completeData_2.push(data_2[i])
+      }
+    }
+    //print to the console to verify
+    console.log(completeData_2)
+
+    //change the numbers as string to numbers
+    var data_3 = completeData_2
+
+    for (i = 0 ; i < data_3.length ; i++){
+      data_3[i][0] = parseFloat(data_3[i][0]);
+      data_3[i][1] = parseFloat(data_3[i][1]);
+      data_3[i][3] = parseFloat(data_3[i][3]);
+    }
+    //print to the console to verify
+    console.log(data_3);
+
+    //now data_3 represents complete observations and mirrors the bikeArrayClean dataset
+    //redefine data_3 to be data to run the code written for bikeArrayClean
+    var data = data_3
+
+    //filter the data to have an array that only contains locations with more than 20 docks
+    var dataFiltered = []
+    for (i = 0 ; i < data.length ; i++){
+      if (data[i][3] > 20){
+        dataFiltered.push(data[i]);
+      }
+    }
+    //print to the console to verify
     console.log(dataFiltered);
 
-
-
-
-
-
+    //create the map
     var map = L.map('map', {
       center: [39.9522, -75.1639],
       zoom: 14
@@ -83,8 +124,7 @@
 
 
 
-    // need to swap the order of lat and long 
-
+    // need to swap the order of lat and long
     var dataFiltered_OrderCoord = [];
     for (var i = 0 ; i < dataFiltered.length ; i++){
       dataFiltered_OrderCoord.push(dataFiltered[i][1]);
@@ -92,8 +132,11 @@
       dataFiltered_OrderCoord.push(dataFiltered[i][2]);
       dataFiltered_OrderCoord.push(dataFiltered[i][3]);
     }
-
+    //print to the console to verify
     console.log(dataFiltered_OrderCoord);
+
+
+
 
     //the code above make one long array of all the values (it is not longer an array of arrays)
 
@@ -101,7 +144,7 @@
 
 
     //create a function that takes an array and splits it into an 'array of n arrays'.
-
+    /*
     var splitArray = function(array, n){
       var length = array.length, out = [], i = 0 ;  //find the length of the array, define an empty array, make i begin at 0
       var n = (length / 4)  //fund how many sub-arrays there will be since we know to take the first 4 elements, then the next 4, etc.
@@ -112,37 +155,47 @@
       }
       return out;
     }
-
     //source for above: http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
 
     //define a variable n that represents the number of locations (sub-arrays) that will be contained within finalArray. We know that each location (sub-array) contains four variables so we can get the number of sub-arrays by dividing the total length of the array by 4
 
     var n = (length / 4);
 
-    //this should be more automated in the future
-    //maybe we can make sure it takes the first 4 indeces and puts them into an array, then the next 4, etc...
-
     //run the function
     var finalArray = splitArray(dataFiltered_OrderCoord, n);
+
+    /this should be more automated in the future
+    //maybe we can make sure it takes the first 4 indeces and puts them into an array, then the next 4, etc...
+    //UPDATE:^^^ the code below does this :)
+    */
+
+
+
+    //the code below does the same as the above code that is comment-ed out, but it is a little cleaner
+
+    //create a function that will split an array into a nested arrary in which each array within the array contains a certain number of elements (length)
+    var splitArray = function(array, length){
+      var nestedArray = [],
+          i = 0,
+          n = array.length;
+      while(i < n){
+        nestedArray.push(array.slice(i, i += length));
+      }
+      return nestedArray
+    }
+    //source for above code: https://gist.github.com/having-fun-coding/8e4b840d00b755f7954e
+
+    //run the function for the data to split into arrays of four elements
+    var finalArray = splitArray(dataFiltered_OrderCoord, 4);
 
     //print the resulting 'array of arrays' to the console to verify it is correct
     console.log(finalArray);
 
-
-
-    //print the markers to the map
-
+    //print the markers to the map and label them with the labels provided in the dataset
     for (var i = 0 ; i < dataFiltered.length ; i++){
-      L.marker(finalArray[i]).addTo(map);
+      L.marker(finalArray[i]).addTo(map).bindPopup(finalArray[i][2]);
     }
 
-
-
-    /* =====================
-
-    End code to add markers to map
-
-    ===================== */
 
     </script>
   </body>
