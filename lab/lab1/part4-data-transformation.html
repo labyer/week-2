@@ -53,19 +53,20 @@
 
     var data = bikeArrayClean;
 
-    /* =====================
+    var dataFiltered = []
 
-    Start code to filter data
+    for (i = 0 ; i < bikeArrayClean.length ; i++){
+      if (bikeArrayClean[i][3] > 20){
+        dataFiltered.push(bikeArrayClean[i]);
+      }
+    }
 
-    ===================== */
+    console.log(dataFiltered);
 
 
 
-    /* =====================
 
-    End code to filter data
 
-    ===================== */
 
     var map = L.map('map', {
       center: [39.9522, -75.1639],
@@ -80,11 +81,60 @@
       ext: 'png'
     }).addTo(map);
 
-    /* =====================
 
-    Start code to add markers to map
 
-    ===================== */
+    // need to swap the order of lat and long 
+
+    var dataFiltered_OrderCoord = [];
+    for (var i = 0 ; i < dataFiltered.length ; i++){
+      dataFiltered_OrderCoord.push(dataFiltered[i][1]);
+      dataFiltered_OrderCoord.push(dataFiltered[i][0]);
+      dataFiltered_OrderCoord.push(dataFiltered[i][2]);
+      dataFiltered_OrderCoord.push(dataFiltered[i][3]);
+    }
+
+    console.log(dataFiltered_OrderCoord);
+
+    //the code above make one long array of all the values (it is not longer an array of arrays)
+
+    //need to split the array into multiple arrays that each contain 4 elements (lng, lat, Label, Number of Stations )
+
+
+    //create a function that takes an array and splits it into an 'array of n arrays'.
+
+    var splitArray = function(array, n){
+      var length = array.length, out = [], i = 0 ;  //find the length of the array, define an empty array, make i begin at 0
+      var n = (length / 4)  //fund how many sub-arrays there will be since we know to take the first 4 elements, then the next 4, etc.
+      while (i < length){     //the while loop goes through the array and splits it into arrays based on the indeces
+        var size = Math.ceil((length - i) / n--);
+        out.push(array.slice(i, i + size));   //push the sliced arrays into the out array defined above
+        i += size;
+      }
+      return out;
+    }
+
+    //source for above: http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
+
+    //define a variable n that represents the number of locations (sub-arrays) that will be contained within finalArray. We know that each location (sub-array) contains four variables so we can get the number of sub-arrays by dividing the total length of the array by 4
+
+    var n = (length / 4);
+
+    //this should be more automated in the future
+    //maybe we can make sure it takes the first 4 indeces and puts them into an array, then the next 4, etc...
+
+    //run the function
+    var finalArray = splitArray(dataFiltered_OrderCoord, n);
+
+    //print the resulting 'array of arrays' to the console to verify it is correct
+    console.log(finalArray);
+
+
+
+    //print the markers to the map
+
+    for (var i = 0 ; i < dataFiltered.length ; i++){
+      L.marker(finalArray[i]).addTo(map);
+    }
 
 
 
