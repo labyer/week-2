@@ -51,62 +51,7 @@
 
     ===================== */
 
-    var data_1 = bikeArrayDirty;
-
-    //clean data
-
-    //remove the incomplete observations by removing any observation that contains less than 4 elements
-    var completeData_1 = []
-    for(i = 0 ; i < data_1.length ; i++){
-      if (data_1[i].length >= 4){
-        completeData_1.push(data_1[i])
-      }
-    }
-    //print to the console to verify
-    console.log(completeData_1)
-
-
-    //one observation (bikeArrayDirty[3]) does not start will coordinates, there could be others.
-    //check and see if the first index of each observation begins with '-7', if it does not, then remove that index from the observation
-    //needing the first variable to start with '-7' is fine with this case because we know we are confined to Philadelphia. This code, however, should be updated to be used in other cities
-    //the code below removes the entire observation rather than just the first index, not exactly what we want...I'll come back to this...
-    //in this case we only want observations with more than 20 stations and this particular observation that is deleted only has 15 so it won't affect our outcome. However, it would be nice to be able to use this code in the future for different station requirements..and this code doesn't yet allow for that
-    var data_2 = completeData_1
-    var firstCharacter = '-'
-    var secondCharacter = '7'
-    var completeData_2 = []
-    for (i = 0 ; i < data_2.length ; i++){
-      if (data_2[i][0][0] === firstCharacter && data_2[i][0][1] === secondCharacter){
-        completeData_2.push(data_2[i])
-      }
-    }
-    //print to the console to verify
-    console.log(completeData_2)
-
-    //change the numbers as string to numbers
-    var data_3 = completeData_2
-
-    for (i = 0 ; i < data_3.length ; i++){
-      data_3[i][0] = parseFloat(data_3[i][0]);
-      data_3[i][1] = parseFloat(data_3[i][1]);
-      data_3[i][3] = parseFloat(data_3[i][3]);
-    }
-    //print to the console to verify
-    console.log(data_3);
-
-    //now data_3 represents complete observations and mirrors the bikeArrayClean dataset
-    //redefine data_3 to be data to run the code written for bikeArrayClean
-    var data = data_3
-
-    //filter the data to have an array that only contains locations with more than 20 docks
-    var dataFiltered = []
-    for (i = 0 ; i < data.length ; i++){
-      if (data[i][3] > 20){
-        dataFiltered.push(data[i]);
-      }
-    }
-    //print to the console to verify
-    console.log(dataFiltered);
+/*
 
     //create the map
     var map = L.map('map', {
@@ -122,8 +67,95 @@
       ext: 'png'
     }).addTo(map);
 
+/*
+
+    var data_1 = bikeArrayDirty;
+    console.log(data_1);
+    //whay are all the arrays with length 4 already numbers instead of strings???
+
+    //clean data
+
+    //remove the incomplete observations by removing any observation that does not have exactly 4 elements
+    var completeData_1 = []
+    for(i = 0 ; i < data_1.length ; i++){
+      if (data_1[i].length === 4){
+        completeData_1.push(data_1[i])
+      }
+    }
+    //print to the console to verify
+    console.log(completeData_1)
+    //for some reason this changed my strings to numbers...why????
 
 
+    //one observation (bikeArrayDirty[3]) does not start will coordinates, there could be others.
+    //check and see if the first index of each observation begins with '-7', if it does not, then remove that index from the observation
+    //needing the first variable to start with '-7' is fine with this case because we know we are confined to Philadelphia. This code, however, should be updated to be used in other cities
+    //the code below removes the entire observation rather than just the first index, not exactly what we want...I'll come back to this...
+    //in this case we only want observations with more than 20 stations and this particular observation that is deleted only has 15 so it won't affect our outcome. However, it would be nice to be able to use this code in the future for different station requirements..and this code doesn't yet allow for that
+/*    var data_2 = completeData_1
+    var firstCharacter = '-'
+    var secondCharacter = '7'
+    var completeData_2 = []
+    for (i = 0 ; i < data_2.length ; i++){
+      if (data_2[i][0][0] === firstCharacter && data_2[i][0][1] === secondCharacter){
+        completeData_2.push(data_2[i])
+      }
+    }
+    //print to the console to verify
+    console.log(completeData_2)
+    //the code above does not work with bikeArrayClean...I'm going to change it to push all obervations that have 4 variables...
+    */
+/*
+    //change the numbers as string to numbers
+    var data_2 = completeData_1
+
+    for (i = 0 ; i < data_2.length ; i++){
+      data_2[i][0] = parseFloat(data_2[i][0]);
+      data_2[i][1] = parseFloat(data_2[i][1]);
+      data_2[i][3] = parseFloat(data_2[i][3]);
+    }
+    //print to the console to verify
+    console.log(data_2);
+
+    //now data_3 represents complete observations and mirrors the bikeArrayClean dataset
+    //redefine data_3 to be data to run the code written for bikeArrayClean
+    var data_3 = data_2;
+    console.log(data_3);
+
+    //filter the data to have an array that only contains locations with more than 20 docks
+    var data_4 = []
+    for (i = 0 ; i < data_3.length ; i++){
+      if (data_3[i][3] > 20){
+        data_4.push(data_3[i]);
+      }
+    }
+    //print to the console to verify
+    console.log(data_4);
+
+
+
+    //need to swap the order of lat and long
+    var bikeTemp = data_4
+    //console.log(bikeTemp)
+    var swapArrayElements = function(array, indexA, indexB){
+      for (i = 0 ; i < array.length ; i++){
+        //console.log(array[i]);
+        var temp = array[i][indexA];
+        array[i][indexA] = array[i][indexB];
+        array[i][indexB] = temp;
+        //console.log(array[i]);
+      }
+    }
+    swapArrayElements(bikeTemp, 0, 1);
+    //console.log(bikeTemp);
+    var finalArray = bikeTemp;
+    //console.log(finalArray);
+    //source for above code: matsteele (gitter convo 2016-01-28 15:55)
+
+
+
+    /*
+    //this is how I originally reordered the array elements. I'm leaving the code just for future reference.
     // need to swap the order of lat and long
     var dataFiltered_OrderCoord = [];
     for (var i = 0 ; i < dataFiltered.length ; i++){
@@ -134,11 +166,9 @@
     }
     //print to the console to verify
     console.log(dataFiltered_OrderCoord);
+    */
 
-
-
-
-    //the code above make one long array of all the values (it is not longer an array of arrays)
+    //the code above makes one long array of all the values (it is not longer an array of arrays)
 
     //need to split the array into multiple arrays that each contain 4 elements (lng, lat, Label, Number of Stations )
 
@@ -170,11 +200,10 @@
     */
 
 
-
+    //don't really need this part with the new reordering function. But again, just leaving it in for reference
     //the code below does the same as the above code that is comment-ed out, but it is a little cleaner
-
     //create a function that will split an array into a nested arrary in which each array within the array contains a certain number of elements (length)
-    var splitArray = function(array, length){
+/*    var splitArray = function(array, length){
       var nestedArray = [],
           i = 0,
           n = array.length;
@@ -191,10 +220,226 @@
     //print the resulting 'array of arrays' to the console to verify it is correct
     console.log(finalArray);
 
+
     //print the markers to the map and label them with the labels provided in the dataset
-    for (var i = 0 ; i < dataFiltered.length ; i++){
+    for (var i = 0 ; i < finalArray.length ; i++){
       L.marker(finalArray[i]).addTo(map).bindPopup(finalArray[i][2]);
     }
+
+
+
+    */
+
+
+
+
+
+
+
+
+
+    /* ===========================
+    lab 2-2/3
+    Try to organize your code into (at least) these discrete tasks:
+    - A function to filter values
+    - A function to clean data
+    - A function to create leaflet objects from 'clean' data
+    - A function to place those objects on the map
+    ============================== */
+
+
+
+
+/*
+
+    var data = bikeArrayDirty;
+    console.log(data)
+
+
+
+    // a function to clean data
+    var cleanData = function(array, indexA, indexB){
+      var temp = [];
+      //keep all observations with exactly four elements within each observation
+      for (i = 0 ; i < array.length ; i++){
+        if (array[i].length === 4){
+          temp.push(array[i]);
+        }
+      }
+      console.log(temp);
+      //convert some strings into numbers
+      for (i = 0 ; i < temp.length ; i++){
+        temp[i][0] = parseFloat(temp[i][0]);
+        temp[i][1] = parseFloat(temp[i][1]);
+        temp[i][3] = parseFloat(temp[i][3]);
+      }
+      console.log(temp);
+      //swap first two elements
+      for (i = 0 ; i < temp.length ; i++){
+        var x = temp[i][indexA];
+        temp[i][indexA] = temp[i][indexB];
+        temp[i][indexB] = x;
+      }
+      console.log(temp);
+      return temp;
+    }
+    //run cleanData function
+    data = cleanData(data, 0, 1);
+    console.log(data);
+
+
+
+    //a function to filter values
+    var filterDocks = function(array, x){
+      var tempArray = [];
+      for ( i = 0 ; i < array.length ; i++){
+        if (array[i][3] > x){
+          tempArray.push(array[i]);
+        }
+      }
+      console.log(tempArray);
+      return tempArray
+    }
+    //run filterDocks function
+    data = filterDocks(data, 20)
+    console.log(data)
+
+
+
+    //a function to create leaflet objects from 'clean' data
+    //looking back, I don't think I actually did what I was supposed to. I made a function to create a map but I don't think that is what the lab is asking. Not really sure what it is asking though...
+    var createMap = function(mapName, centerVal, zoomVal, tileLayerName, tileLayerInfo, attributionInfo, subdomainsInfo, minZoomVal, maxZoomVal, extInfo) {
+      var map = L.map(mapName, {
+        center: centerVal,
+        zoom: zoomVal
+      });
+      var tileLayer = L.tileLayer(tileLayerInfo, {
+        attrubution: attributionInfo,
+        subdomains: subdomainsInfo,
+        minZoom: minZoomVal,
+        maxZoom: maxZoomVal,
+        ext: extInfo
+      });
+      tileLayer.addTo(map);
+      return map
+    }
+    //run createMap function
+    theMap = createMap('map', [39.9522, -75.1639], 14, 'Stamen_TonerLite',  'http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}',  'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', 'abcd', 0, 20, 'png');
+
+
+
+    //a function to place those objects on the map
+    var mapArray = function(array, mapName){
+      for (var i = 0 ; i < array.length ; i++){
+        L.marker(array[i]).addTo(mapName).bindPopup(array[i][2]);
+      };
+      return array;
+    };
+    //run mapArray function
+    mapArray(data, theMap);
+
+
+
+*/
+
+/*================================
+#### Lab 2 Part 4
+
+It is important to be able to think about functions abstractly. When properly written, they can be popped in and out of your code almost seemlessly.
+See if you can rewrite the code you've written inside the loop to use all of the functions you wrote without saving anything to a variable.
+If your functions are written purely (all but the last one, which necessarily accessses the map) you will be able to chain function calls together into a data pipeline.
+====================*/
+
+
+
+//******************haven't altered the code below to address Lab 2 Part 4 yet (2016-01-31 17:53)
+
+
+
+var data = bikeArrayDirty;
+
+// a function to clean data
+var cleanData = function(array, indexA, indexB){
+  var temp = [];
+  //keep all observations with exactly four elements within each observation
+  for (i = 0 ; i < array.length ; i++){
+    if (array[i].length === 4){
+      temp.push(array[i]);
+    }
+  }
+  console.log(temp);
+  //convert some strings into numbers
+  for (i = 0 ; i < temp.length ; i++){
+    temp[i][0] = parseFloat(temp[i][0]);
+    temp[i][1] = parseFloat(temp[i][1]);
+    temp[i][3] = parseFloat(temp[i][3]);
+  }
+  console.log(temp);
+  //swap first two elements
+  for (i = 0 ; i < temp.length ; i++){
+    var x = temp[i][indexA];
+    temp[i][indexA] = temp[i][indexB];
+    temp[i][indexB] = x;
+  }
+  console.log(temp);
+  return temp;
+}
+//run cleanData function
+data = cleanData(data, 0, 1);
+console.log(data);
+
+
+
+//a function to filter values
+var filterDocks = function(array, x){
+  var tempArray = [];
+  for ( i = 0 ; i < array.length ; i++){
+    if (array[i][3] > x){
+      tempArray.push(array[i]);
+    }
+  }
+  console.log(tempArray);
+  return tempArray
+}
+//run filterDocks function
+data = filterDocks(data, 20)
+console.log(data)
+
+
+
+//a function to create leaflet objects from 'clean' data
+var createMap = function(mapName, centerVal, zoomVal, tileLayerName, tileLayerInfo, attributionInfo, subdomainsInfo, minZoomVal, maxZoomVal, extInfo) {
+  var map = L.map(mapName, {
+    center: centerVal,
+    zoom: zoomVal
+  });
+  var tileLayer = L.tileLayer(tileLayerInfo, {
+    attrubution: attributionInfo,
+    subdomains: subdomainsInfo,
+    minZoom: minZoomVal,
+    maxZoom: maxZoomVal,
+    ext: extInfo
+  });
+  tileLayer.addTo(map);
+  return map
+}
+//run createMap function
+theMap = createMap('map', [39.9522, -75.1639], 14, 'Stamen_TonerLite',  'http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}',  'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', 'abcd', 0, 20, 'png');
+
+
+
+//a function to place those objects on the map
+var mapArray = function(array, mapName){
+  for (var i = 0 ; i < array.length ; i++){
+    L.marker(array[i]).addTo(mapName).bindPopup(array[i][2]);
+  };
+  return array;
+};
+//run mapArray function
+mapArray(data, theMap);
+
+
+
 
 
     </script>
