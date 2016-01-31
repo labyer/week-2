@@ -12,10 +12,14 @@
     <div id="map" style="position:fixed;right:0px;left:400px;height:100%;">
     </div>
 
+
     <!--javascript imports-->
     <script src="leaflet.js"></script>
     <script src="underscore.js"></script>
     <script src="health_centers.js"></script>
+
+    <!--import this to use $-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <!--Your code starts here-->
     <script>
@@ -58,10 +62,202 @@
 
       ===================== */
 
-      var jsonToCsv = function(json) { console.log(json); };
+      //var data = healthCenters;
+      //console.log(data);
+
+/* googling...
+this code doesnt seem to do anything...:(
+source: http://jsfiddle.net/sturtevant/vunf9/
+       var jsonToCsv = function(json){
+         console.log(json);
+         //if json is not an object then JSON.parse will parse the json string in an Object
+         var arrayData = typeof json != 'object' ? JSON.parse(json) : json;
+         var str = '';
+         var line = '';
+         if ($('#labels').is(':checked')){
+           var head = array[0];
+           if ($('#quote').is(':checked')){
+             for (var index in array[0]){
+               var value = index + '';
+               line += '"' + value.replace(/"/g, '""') + '",';
+             }
+           } else {
+             for (var index in array[0]){
+               line += index + ',';
+             }
+           }
+           line = line.slice(0, -1);
+           str += line +'\r\n';
+         }
+         for (var i = 0 ; i < arrayData.length ; i++){
+           var line = '';
+           if ($('#quote').is(':checked')){
+             for (var index in arrayData[i]){
+               var value = arrayData[i][index] + '';
+               line += '"' + value.replace(/"/g, '""') + '",';
+             }
+           } else {
+             for (var index in arrayData[i]){
+               line += arrayData[i][index] + ',';
+             }
+           }
+           line = line.slice(0, -1);
+           str += line + '\r\h';
+         }
+         return str;
+       }
+*/
 
 
-      var addMarkers = function(map) {};
+
+/* googling...
+this turns the data into something that kind of looks like a nested arry but still has all the categories and uses {} instead of [] around each observation
+source: http://stackoverflow.com/questions/8847766/how-to-convert-json-to-csv-format-and-store-in-a-variable
+       var jsonToCsv = function(json){
+         console.log(json);
+         var array = typeof json != 'object' ? JSON.parse(json) : json;
+         var str = '';
+         for (var i = 0 ; i < array.length ; i++){
+           var line = '';
+           for (var index in array[i]){
+             if (line != '') line += ','
+             line += array[i][index];
+           }
+           str += line + '\r\n';
+         }
+         return str;
+       }
+
+       $(document).ready(function(){
+         data = healthCenters
+         var jsonObject = JSON.stringify(data);
+        $('#json').text(jsonObject);
+        $('#csv').text(jsonToCsv(jsonObject))
+       })
+
+*/
+
+
+
+/* my try at it...
+       //define a variable array to store all observations/objects/rows
+       var array = [];
+       //define a variable row to store all the indeces of each obsrvation/object/row
+       var row = [];
+       //loop through each object within the set of objects
+       for (i = 0 ; i < objects.length ; i++){
+         //loop through the indeces within an individual object
+         for (i = 0 ; i < objects[i].length ; i++){
+           //for all the keys in the individual objects...
+           for (key in objects[i]){
+             //...push the keys of the individual objects into the corresponding [i] in the array
+             row.push(objects[i][key]);
+           }
+           //push the rows of all the objects into the array
+           array.push(row[i]);
+         }
+       }
+
+       console.log(array);
+
+
+
+/* more trying on my own...
+       var jsonToCsv = function(json){
+         //console.log(json);
+         var array = []
+         for (i = 0 ; i < json.length ; i++){
+           var row = [];
+           for (key in json[i]){
+             row.push(json[i][key]);
+           }
+           array.push(json[i]);
+         }
+         console.log(array)
+       }
+*/
+
+
+/* trying out things with the sample code nathan provided on gitter
+        var anObject = {'name': 'nathan', 'profession': 'programmer'};
+        console.log(anObject);
+        var row = [];
+        for (key in anObject) {
+        row.push(anObject[key]);
+        }
+        console.log(row);
+
+        var arr = Object.keys(anObject).map(function(k) { return anObject[k] });
+        console.log(arr);
+
+       var objects = [
+         {'name': 'nathan', 'profession': 'programmer', 'number': 5},
+         {'name': 'laura', 'profession': 'planner', 'number': 10}
+       ];
+  */
+
+
+
+
+
+
+
+
+
+
+// Technically this code works but I don't like the way I wrote it to accomplish the task. Right now, the jsonToCsv function is tailored to this specific dataset. I would like to have it more automated so it can be applied to different datasets. I know there's a way to do this, possibly with the various tests above, but I couldn't get any of them to work properly. I would like to come back and redo this correctly to have just the two functions jsonToCsv and addMarkers that were specified when I started with this file
+
+      var data = healthCenters;
+
+      //function to convert JSON to CSV format
+       var jsonToCsv = function(json, length){
+         var obs = [];
+         for (var key in json){
+           if (json.hasOwnProperty(key)){
+             obs.push(json[key]['LAT']); obs.push(json[key]['LNG']);
+             obs.push(json[key]['OBJECTID']);
+             obs.push(json[key]['NAME']);
+             obs.push(json[key]['ORGANIZATION']);
+             obs.push(json[key]['ZIP']);
+             obs.push(json[key]['PHONE']);
+             obs.push(json[key]['WEBSITE']);
+             obs.push(json[key]['DENTAL_PHONE']);
+             obs.push(json[key]['FULL_ADDRESS']);
+           }
+         }
+         return obs;
+       }
+       temp = jsonToCsv(data);
+       console.log(temp);
+
+       //right now the data is in one giant array. This function splits this array into nested arrays in which each one has a specified number of indeces (in this case I speficied 10 in the funtion parameters). I'm sure this is an unnecessary step had I gotten the proper jsonToCsv conversion equation.
+       var splitArray = function(array, length){
+             var nestedArray = [],
+                 i = 0,
+                 n = array.length;
+             while(i < n){
+               nestedArray.push(array.slice(i, i += length));
+             }
+             return nestedArray
+           }
+      var final = splitArray(temp, 10)
+      console.log(final)
+
+      //add a new row to the top of the array which contains the labels
+      var labels = ['LAT', 'LNG', 'OBJECTID', 'NAME', 'ORGANIZATION', 'ZIP', 'PHONE', 'WEBSITE', 'DENTAL_PHONE', 'FULL_ADDRESS'];
+      final.unshift(labels);
+      console.log(final)
+
+      //print the markers to the map and label them with the labels provided in the dataset
+      var addMarkers = function(array, map) {
+        for (var i = 1 ; i < array.length ; i++){
+          L.marker(array[i]).addTo(map).bindPopup(array[i][3]);
+        };
+        return array;
+      };
+
+      addMarkers(final, map)
+
 
       /* =====================
 
@@ -69,9 +265,6 @@
 
       ===================== */
 
-
-      jsonToCsv(healthCenters);
-      addMarkers(map);
     </script>
     <!--Your code ends here-->
   </body>
